@@ -8,9 +8,9 @@
       <h2 class="fw-bold mt-1">{{ survey.title }}</h2>
       <p class="text-muted mb-0">{{ survey.description }}</p>
     </div>
-    <button class="btn btn-outline-primary">
+    <a [routerLink]="['/view', surveyId]" target="_blank" class="btn btn-outline-primary">
       <i class="bi bi-eye"></i> Vista Previa
-    </button>
+    </a>
   </div>
 
   <div class="row">

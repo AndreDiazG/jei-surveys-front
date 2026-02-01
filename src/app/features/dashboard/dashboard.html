@@ -59,10 +59,15 @@
             </small>
 
             <div class="btn-group">
-              <button class="btn btn-sm btn-outline-secondary" [routerLink]="['/survey/results', survey.id]" title="Ver Resultados">
+              <button class="btn btn-sm btn-outline-success" (click)="copyLink(survey.id)"
+                title="Copiar Link para Compartir">
+                <i class="bi bi-share-fill"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-secondary" [routerLink]="['/survey/results', survey.id]"
+                title="Ver Resultados">
                 <i class="bi bi-bar-chart"></i>
               </button>
-              <button class="btn btn-sm btn-outline-primary" [routerLink]="['/survey/edit', survey.id]" title="Editar / Ver Link">
+              <button class="btn btn-sm btn-outline-primary" [routerLink]="['/survey/edit', survey.id]" title="Editar">
                 <i class="bi bi-pencil"></i>
               </button>
             </div>

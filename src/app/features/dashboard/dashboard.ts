@@ -35,4 +35,15 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
+
+  copyLink(surveyId: number) {
+    // Construir la URL completa usando el origen actual
+    const url = `${window.location.origin}/view/${surveyId}`;
+
+    navigator.clipboard.writeText(url).then(() => {
+      alert('¡Link copiado al portapapeles! 📋\nListo para compartir.');
+    }).catch(err => {
+      console.error('Error al copiar: ', err);
+    });
+  }
 }
