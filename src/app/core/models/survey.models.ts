@@ -52,6 +52,12 @@ export interface Survey {
   questions?: Question[];
 }
 
+export interface SurveyResponsePayload {
+  answers: {
+    questionId: number;
+    value: string | number | boolean | string[];
+  }[];
+}
 
 
 

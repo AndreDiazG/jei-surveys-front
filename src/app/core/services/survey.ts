@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { Survey, CreateQuestionRequest } from '../models/survey.models';
+import { Survey, CreateQuestionRequest, SurveyResponsePayload } from '../models/survey.models';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -28,5 +28,10 @@ export class SurveyService {
     const url = `${this.apiUrl}/${surveyId}/questions`;
     console.log('Creating question at URL:', url, 'with data:', questionData);
     return this.http.post(url, questionData);
+  }
+
+  submitResponse(surveyId: number, payload: SurveyResponsePayload): Observable<any> {
+    const url = `${environment.apiUrl}/surveys/${surveyId}/responses`;
+    return this.http.post(url, payload);
   }
 }

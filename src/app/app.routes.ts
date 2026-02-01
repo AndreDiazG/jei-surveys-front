@@ -4,6 +4,7 @@ import { DashboardComponent } from './features/dashboard/dashboard';
 import { authGuard } from './core/guards/auth-guard';
 import { SurveyCreateComponent } from './features/survey/survey-create/survey-create';
 import { SurveyEditComponent } from './features/survey/survey-edit/survey-edit';
+import { SurveyAnswerComponent } from './features/public/survey-answer/survey-answer';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
@@ -23,4 +24,5 @@ export const routes: Routes = [
     component: SurveyEditComponent,
     canActivate: [authGuard]
   },
+  { path: 'view/:id', component: SurveyAnswerComponent },
 ];

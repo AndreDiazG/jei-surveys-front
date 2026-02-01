@@ -1,0 +1,133 @@
+<div class="container py-5">
+
+  <div *ngIf="isLoading" class="text-center mt-5">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-2 text-muted">Cargando encuesta...</p>
+  </div>
+
+  <div *ngIf="isSuccess" class="row justify-content-center">
+    <div class="col-md-6 text-center">
+      <div class="card shadow-sm border-0 p-5">
+        <div class="mb-3 text-success">
+          <i class="bi bi-check-circle-fill display-1"></i>
+        </div>
+        <h2 class="fw-bold">¡Gracias por responder!</h2>
+        <p class="text-muted">Tus respuestas han sido registradas exitosamente.</p>
+        <button routerLink="/dashboard" class="btn btn-outline-primary mt-3">
+          Volver al Inicio
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !isSuccess && survey()" class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+
+      <div class="card shadow border-0 mb-4 border-top border-primary border-5">
+        <div class="card-body p-4">
+          <h1 class="fw-bold mb-2">{{ survey()?.title }}</h1>
+          <p class="text-muted mb-0" style="white-space: pre-line;">
+            {{ survey()?.description }}
+          </p>
+        </div>
+      </div>
+
+      <form [formGroup]="answerForm" (ngSubmit)="onSubmit()">
+
+        <div *ngFor="let q of survey()?.questions" class="card shadow-sm border-0 mb-3">
+          <div class="card-body p-4">
+
+            <label class="form-label fw-semibold d-block mb-3">
+              {{ q.text }}
+              <span *ngIf="q.required" class="text-danger">*</span>
+            </label>
+
+            <div *ngIf="q.type === QuestionType.TEXT">
+              <input *ngIf="!q.options?.longText"
+                     type="text"
+                     class="form-control"
+                     [formControlName]="q.id"
+                     [placeholder]="q.options?.placeholder || 'Tu respuesta...'">
+
+              <textarea *ngIf="q.options?.longText"
+                        class="form-control"
+                        rows="3"
+                        [formControlName]="q.id"
+                        [placeholder]="q.options?.placeholder || 'Tu respuesta...'"></textarea>
+            </div>
+
+            <div *ngIf="q.type === QuestionType.RATING">
+              <div class="d-flex gap-2 align-items-center flex-wrap">
+                <ng-container *ngFor="let val of [].constructor(q.options?.max); let i = index">
+                  <input type="radio"
+                         class="btn-check"
+                         [id]="'rating-'+q.id+'-'+(i+1)"
+                         [value]="i+1"
+                         formControlName="{{ q.id }}">
+                  <label class="btn btn-outline-warning" [for]="'rating-'+q.id+'-'+(i+1)">
+                    {{ i + 1 }} <i class="bi bi-star-fill"></i>
+                  </label>
+                </ng-container>
+                <span class="text-muted small ms-2" *ngIf="q.options?.maxLabel">
+                  ({{ q.options?.maxLabel }})
+                </span>
+              </div>
+            </div>
+
+            <div *ngIf="q.type === QuestionType.SINGLE_CHOICE">
+              <div class="form-check mb-2" *ngFor="let choice of q.options?.choices; let i = index">
+                <input class="form-check-input"
+                       type="radio"
+                       [id]="'radio-'+q.id+'-'+i"
+                       [value]="choice"
+                       formControlName="{{ q.id }}">
+                <label class="form-check-label" [for]="'radio-'+q.id+'-'+i">
+                  {{ choice }}
+                </label>
+              </div>
+            </div>
+
+            <div *ngIf="q.type === QuestionType.MULTIPLE_CHOICE">
+              <div class="form-check mb-2" *ngFor="let choice of q.options?.choices; let i = index">
+                <input class="form-check-input"
+                       type="checkbox"
+                       [id]="'check-'+q.id+'-'+i"
+                       [value]="choice"
+                       (change)="onCheckboxChange(q.id, choice, $event)">
+                <label class="form-check-label" [for]="'check-'+q.id+'-'+i">
+                  {{ choice }}
+                </label>
+              </div>
+            </div>
+
+            <div *ngIf="q.type === QuestionType.BOOLEAN">
+              <div class="btn-group w-100" role="group">
+                <input type="radio" class="btn-check" [id]="'bool-y-'+q.id" [value]="true" formControlName="{{ q.id }}">
+                <label class="btn btn-outline-success" [for]="'bool-y-'+q.id">
+                  {{ q.options?.positiveLabel || 'Sí' }}
+                </label>
+
+                <input type="radio" class="btn-check" [id]="'bool-n-'+q.id" [value]="false" formControlName="{{ q.id }}">
+                <label class="btn btn-outline-secondary" [for]="'bool-n-'+q.id">
+                  {{ q.options?.negativeLabel || 'No' }}
+                </label>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="d-grid mt-4 mb-5">
+          <button type="submit" class="btn btn-primary btn-lg" [disabled]="answerForm.invalid || isSubmitting">
+            <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
+            Enviar Respuestas
+          </button>
+          <div *ngIf="answerForm.invalid && answerForm.touched" class="text-danger text-center mt-2 small">
+            Por favor completa todas las preguntas obligatorias.
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
