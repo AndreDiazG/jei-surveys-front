@@ -1,8 +1,59 @@
+export enum QuestionType {
+  TEXT = 'text',
+  RATING = 'rating',
+  SINGLE_CHOICE = 'single-choice',
+  MULTIPLE_CHOICE = 'multiple-choice',
+  BOOLEAN = 'boolean'
+}
+
+export interface QuestionOptions {
+  // Para RATING
+  min?: number;
+  max?: number;
+  step?: number;
+  maxLabel?: string;
+
+  // Para SINGLE/MULTIPLE CHOICE
+  choices?: string[];
+  allowOther?: boolean;
+  minSelection?: number;
+  maxSelection?: number;
+
+  // Para TEXT
+  placeholder?: string;
+  longText?: boolean;
+  maxLength?: number;
+
+  // Para BOOLEAN
+  positiveLabel?: string;
+  negativeLabel?: string;
+}
+
+// Interfaz para cuando se crea una pregunta nueva
+export interface CreateQuestionRequest {
+  text: string;
+  type: QuestionType;
+  required: boolean;
+  options?: QuestionOptions;
+}
+
+//Interfaz de lectura de una pregunta existente
+export interface Question extends CreateQuestionRequest {
+  id: number;
+  surveyId: number;
+}
+
 export interface Survey {
   id: number;
   title: string;
   description?: string;
   isActive: boolean;
   createdAt: string;
-  // questions?: Question[];
+  questions?: Question[];
 }
+
+
+
+
+
+

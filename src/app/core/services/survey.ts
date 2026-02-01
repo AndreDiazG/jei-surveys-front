@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { Survey } from '../models/survey.models';
+import { Survey, CreateQuestionRequest } from '../models/survey.models';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -14,5 +14,19 @@ export class SurveyService {
   // Hace uso del interceptor para agregar el token y con este el backend identifica al usuario
   getMySurveys(): Observable<Survey[]> {
     return this.http.get<Survey[]>(this.apiUrl);
+  }
+
+  createSurvey(data: { title: string; description?: string }) {
+    return this.http.post<Survey>(this.apiUrl, data);
+  }
+
+  getSurveyById(id: number): Observable<Survey> {
+    return this.http.get<Survey>(`${this.apiUrl}/${id}`);
+  }
+
+  createQuestion(surveyId: number, questionData: CreateQuestionRequest): Observable<any> {
+    const url = `${this.apiUrl}/${surveyId}/questions`;
+    console.log('Creating question at URL:', url, 'with data:', questionData);
+    return this.http.post(url, questionData);
   }
 }

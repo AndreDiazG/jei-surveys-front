@@ -1,0 +1,178 @@
+<div class="container mt-4 mb-5" *ngIf="survey">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <a routerLink="/dashboard" class="text-decoration-none text-muted small">
+        <i class="bi bi-arrow-left"></i> Volver
+      </a>
+      <h2 class="fw-bold mt-1">{{ survey.title }}</h2>
+      <p class="text-muted mb-0">{{ survey.description }}</p>
+    </div>
+    <button class="btn btn-outline-primary">
+      <i class="bi bi-eye"></i> Vista Previa
+    </button>
+  </div>
+
+  <div class="row">
+
+    <div class="col-lg-7 mb-4">
+      <h5 class="fw-bold text-secondary mb-3">Preguntas ({{ questions.length }})</h5>
+
+      <div *ngIf="questions.length === 0" class="alert alert-info">
+        <i class="bi bi-info-circle"></i> Aún no hay preguntas. ¡Agrega la primera!
+      </div>
+
+      <div class="vstack gap-3">
+        <div class="card border-0 shadow-sm" *ngFor="let q of questions; let i = index">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <h6 class="fw-bold mb-1">
+                <span class="badge bg-light text-dark me-2">#{{ i + 1 }}</span>
+                {{ q.text }}
+                <span *ngIf="q.required" class="text-danger">*</span>
+              </h6>
+              <span class="badge bg-primary bg-opacity-10 text-primary">{{ q.type }}</span>
+            </div>
+
+            <div class="mt-2 ms-4 text-muted small">
+
+              <div *ngIf="q.type === QuestionType.RATING">
+                Escala del {{ q.options?.min }} al {{ q.options?.max }}
+                <span *ngIf="q.options?.maxLabel">({{ q.options?.maxLabel }})</span>
+              </div>
+
+              <div *ngIf="q.type === QuestionType.SINGLE_CHOICE || q.type === QuestionType.MULTIPLE_CHOICE">
+                <ul class="mb-0 ps-3">
+                  <li *ngFor="let choice of q.options?.choices">{{ choice }}</li>
+                </ul>
+              </div>
+
+              <div *ngIf="q.type === QuestionType.BOOLEAN">
+                <i class="bi bi-toggle-on"></i> {{ q.options?.positiveLabel }} / {{ q.options?.negativeLabel }}
+              </div>
+
+              <div *ngIf="q.type === QuestionType.TEXT">
+                <i class="bi bi-fonts"></i>
+                {{ q.options?.longText ? 'Respuesta Larga' : 'Respuesta Corta' }}
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card shadow border-0 bg-white sticky-top" style="top: 20px; z-index: 10;">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0 fw-bold"><i class="bi bi-plus-circle"></i> Agregar Pregunta</h5>
+        </div>
+        <div class="card-body">
+
+          <form [formGroup]="questionForm" (ngSubmit)="onSubmitQuestion()">
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Pregunta</label>
+              <input type="text" class="form-control" formControlName="text" placeholder="Ej: ¿Qué opinas?">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Tipo</label>
+              <select class="form-select" formControlName="type">
+                <option [value]="QuestionType.TEXT">Texto Abierto</option>
+                <option [value]="QuestionType.RATING">Calificación (Estrellas/Núm)</option>
+                <option [value]="QuestionType.SINGLE_CHOICE">Selección Única</option>
+                <option [value]="QuestionType.MULTIPLE_CHOICE">Selección Múltiple</option>
+                <option [value]="QuestionType.BOOLEAN">Sí / No</option>
+              </select>
+            </div>
+
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" formControlName="required" id="reqChk">
+              <label class="form-check-label" for="reqChk">Respuesta obligatoria</label>
+            </div>
+
+            <div formGroupName="options">
+
+              <div *ngIf="questionForm.get('type')?.value === QuestionType.RATING"
+                class="p-3 bg-light rounded mb-3 border">
+                <h6 class="small fw-bold text-muted">Configurar Escala</h6>
+                <div class="row g-2">
+                  <div class="col-4">
+                    <label class="small">Min</label>
+                    <input type="number" class="form-control form-control-sm" formControlName="min">
+                  </div>
+                  <div class="col-4">
+                    <label class="small">Max</label>
+                    <input type="number" class="form-control form-control-sm" formControlName="max">
+                  </div>
+                  <div class="col-4">
+                    <label class="small">Paso</label>
+                    <input type="number" class="form-control form-control-sm" formControlName="step">
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="questionForm.get('type')?.value === QuestionType.TEXT"
+                class="p-3 bg-light rounded mb-3 border">
+                <div class="mb-2">
+                  <label class="small">Placeholder</label>
+                  <input type="text" class="form-control form-control-sm" formControlName="placeholder">
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" formControlName="longText">
+                  <label class="form-check-label small">Es párrafo largo</label>
+                </div>
+              </div>
+
+              <div
+                *ngIf="questionForm.get('type')?.value === QuestionType.SINGLE_CHOICE || questionForm.get('type')?.value === QuestionType.MULTIPLE_CHOICE"
+                class="p-3 bg-light rounded mb-3 border">
+                <h6 class="small fw-bold text-muted mb-2">Opciones de Respuesta</h6>
+
+                <div formArrayName="choices">
+                  <div class="input-group mb-2" *ngFor="let item of choicesFormArray.controls; let i = index">
+                    <span class="input-group-text small">{{ i + 1 }}</span>
+                    <input type="text" class="form-control form-control-sm" [formControlName]="i"
+                      placeholder="Opción...">
+                    <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeChoice(i)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-primary w-100" (click)="addChoice()">
+                  <i class="bi bi-plus"></i> Agregar Opción
+                </button>
+              </div>
+
+              <div *ngIf="questionForm.get('type')?.value === QuestionType.BOOLEAN"
+                class="p-3 bg-light rounded mb-3 border">
+                <div class="row g-2">
+                  <div class="col-6">
+                    <label class="small">Etiqueta Positiva</label>
+                    <input type="text" class="form-control form-control-sm" formControlName="positiveLabel">
+                  </div>
+                  <div class="col-6">
+                    <label class="small">Etiqueta Negativa</label>
+                    <input type="text" class="form-control form-control-sm" formControlName="negativeLabel">
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-success" [disabled]="questionForm.invalid || isSubmitting">
+                <i class="bi bi-save"></i> Guardar Pregunta
+              </button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

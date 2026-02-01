@@ -1,0 +1,55 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+
+      <a routerLink="/dashboard" class="text-decoration-none mb-3 d-inline-block">
+        <i class="bi bi-arrow-left"></i> Volver al Dashboard
+      </a>
+
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+          <h3 class="fw-bold mb-4">Nueva Encuesta</h3>
+
+          <form [formGroup]="surveyForm" (ngSubmit)="onSubmit()">
+
+            <div class="mb-3">
+              <label for="title" class="form-label fw-semibold">Título de la encuesta <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                id="title"
+                class="form-control form-control-lg"
+                formControlName="title"
+                placeholder="Ej: Encuesta de Satisfacción 2026"
+                [class.is-invalid]="surveyForm.get('title')?.invalid && surveyForm.get('title')?.touched"
+              >
+              <div class="invalid-feedback">
+                El título es obligatorio (mínimo 5 caracteres).
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="description" class="form-label fw-semibold">Descripción (Opcional)</label>
+              <textarea
+                id="description"
+                class="form-control"
+                rows="3"
+                formControlName="description"
+                placeholder="¿De qué trata esta encuesta?"
+              ></textarea>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" routerLink="/dashboard" class="btn btn-light">Cancelar</button>
+              <button type="submit" class="btn btn-primary" [disabled]="surveyForm.invalid || isSubmitting">
+                <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
+                Guardar y Continuar
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

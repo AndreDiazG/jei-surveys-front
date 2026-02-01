@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login';
 import { DashboardComponent } from './features/dashboard/dashboard';
 import { authGuard } from './core/guards/auth-guard';
+import { SurveyCreateComponent } from './features/survey/survey-create/survey-create';
+import { SurveyEditComponent } from './features/survey/survey-edit/survey-edit';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
@@ -10,5 +12,15 @@ export const routes: Routes = [
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [authGuard] // Protección de la ruta
+  },
+  {
+    path: 'survey/create',
+    component: SurveyCreateComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'survey/edit/:id',
+    component: SurveyEditComponent,
+    canActivate: [authGuard]
   },
 ];
