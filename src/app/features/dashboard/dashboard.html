@@ -1,0 +1,76 @@
+<nav class="navbar navbar-light bg-white shadow-sm mb-4">
+  <div class="container">
+    <span class="navbar-brand mb-0 h1 text-primary">
+      <i class="bi bi-pie-chart-fill"></i> Jei-Surveys
+    </span>
+    <div class="d-flex align-items-center gap-3">
+      <span class="text-muted small">
+        Hola, {{ authService.currentUser()?.name || 'Usuario' }}
+      </span>
+      <button class="btn btn-outline-danger btn-sm" (click)="authService.logout()">
+        <i class="bi bi-box-arrow-right"></i> Salir
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">Mis Encuestas</h2>
+    <button class="btn btn-primary" routerLink="/survey/create">
+      <i class="bi bi-plus-lg"></i> Nueva Encuesta
+    </button>
+  </div>
+
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && surveys.length === 0" class="text-center py-5 bg-white rounded shadow-sm">
+    <i class="bi bi-clipboard-data display-1 text-muted mb-3"></i>
+    <p class="lead">Aún no tienes encuestas creadas.</p>
+    <button class="btn btn-outline-primary" routerLink="/survey/create">
+      ¡Crea la primera!
+    </button>
+  </div>
+
+  <div class="row" *ngIf="!isLoading && surveys.length > 0">
+    <div class="col-md-4 mb-4" *ngFor="let survey of surveys">
+
+      <div class="card h-100 shadow-sm hover-shadow transition">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h5 class="card-title fw-bold text-truncate" title="{{survey.title}}">{{ survey.title }}</h5>
+            <span class="badge" [ngClass]="survey.isActive ? 'bg-success' : 'bg-secondary'">
+              {{ survey.isActive ? 'Activa' : 'Cerrada' }}
+            </span>
+          </div>
+
+          <p class="card-text text-muted small" style="min-height: 40px;">
+            {{ survey.description || 'Sin descripción' }}
+          </p>
+
+          <div class="d-flex justify-content-between align-items-center mt-3">
+            <small class="text-muted">
+              <i class="bi bi-calendar"></i> {{ survey.createdAt | date:'mediumDate' }}
+            </small>
+
+            <div class="btn-group">
+              <button class="btn btn-sm btn-outline-secondary" title="Ver Resultados">
+                <i class="bi bi-bar-chart"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-primary" title="Editar / Ver Link">
+                <i class="bi bi-pencil"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
