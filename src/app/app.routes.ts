@@ -5,6 +5,7 @@ import { authGuard } from './core/guards/auth-guard';
 import { SurveyCreateComponent } from './features/survey/survey-create/survey-create';
 import { SurveyEditComponent } from './features/survey/survey-edit/survey-edit';
 import { SurveyAnswerComponent } from './features/public/survey-answer/survey-answer';
+import { SurveyResultsComponent } from './features/survey/survey-results/survey-results';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
@@ -25,4 +26,9 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   { path: 'view/:id', component: SurveyAnswerComponent },
+  {
+  path: 'survey/results/:id',
+  component: SurveyResultsComponent,
+  canActivate: [authGuard]
+}
 ];

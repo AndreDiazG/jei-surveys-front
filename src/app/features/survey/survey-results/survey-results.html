@@ -1,0 +1,69 @@
+<div class="container py-5">
+
+  <div *ngIf="isLoading" class="text-center mt-5">
+    <div class="spinner-border text-primary"></div>
+  </div>
+
+  <div *ngIf="!isLoading && results()" class="row justify-content-center">
+    <div class="col-lg-10">
+
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <a routerLink="/dashboard" class="text-decoration-none text-muted small">
+            <i class="bi bi-arrow-left"></i> Volver
+          </a>
+          <h2 class="fw-bold mt-1">{{ results()?.title }}</h2>
+          <span class="badge bg-success">{{ results()?.totalResponses }} Respuestas Totales</span>
+        </div>
+        <button class="btn btn-outline-secondary" (click)="ngOnInit()">
+          <i class="bi bi-arrow-clockwise"></i> Actualizar
+        </button>
+      </div>
+
+      <div class="vstack gap-4">
+
+        <div *ngFor="let q of results()?.results" class="card shadow-sm border-0">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-3">{{ q.text }}</h5>
+
+            <div *ngIf="q.type === QuestionType.SINGLE_CHOICE || q.type === QuestionType.MULTIPLE_CHOICE">
+              <div class="chart-container" style="height: 300px; width: 100%; max-width: 400px; margin: 0 auto;">
+                <canvas baseChart
+                  [data]="getPieChartData(q.stats)"
+                  [type]="'pie'"
+                  [options]="{ responsive: true, maintainAspectRatio: false }">
+                </canvas>
+              </div>
+            </div>
+
+            <div *ngIf="q.type === QuestionType.RATING || q.type === QuestionType.BOOLEAN">
+              <div class="chart-container" style="height: 300px;">
+                <canvas baseChart
+                  [data]="getBarChartData(q.stats)"
+                  [type]="'bar'"
+                  [options]="barChartOptions">
+                </canvas>
+              </div>
+            </div>
+
+            <div *ngIf="q.type === QuestionType.TEXT">
+              <div class="bg-light p-3 rounded" style="max-height: 200px; overflow-y: auto;">
+                <ul class="list-unstyled mb-0">
+                  <li *ngFor="let ans of q.answers" class="mb-2 pb-2 border-bottom">
+                    <i class="bi bi-chat-left-text text-muted me-2"></i> {{ ans }}
+                  </li>
+                  <li *ngIf="!q.answers?.length" class="text-muted small fst-italic">
+                    Sin respuestas de texto aún.
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

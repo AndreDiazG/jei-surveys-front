@@ -59,7 +59,7 @@
             </small>
 
             <div class="btn-group">
-              <button class="btn btn-sm btn-outline-secondary" title="Ver Resultados">
+              <button class="btn btn-sm btn-outline-secondary" [routerLink]="['/survey/results', survey.id]" title="Ver Resultados">
                 <i class="bi bi-bar-chart"></i>
               </button>
               <button class="btn btn-sm btn-outline-primary" [routerLink]="['/survey/edit', survey.id]" title="Editar / Ver Link">

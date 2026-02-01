@@ -59,7 +59,32 @@ export interface SurveyResponsePayload {
   }[];
 }
 
+// Resultado de una pregunta individual
+export interface QuestionResult {
+  questionId: number;
+  text: string;
+  type: QuestionType;
+  // Para gráficas: Un objeto donde la clave es la opción y el valor es la cantidad
+  // Ej: { "Opción A": 10, "Opción B": 5 }
+  stats?: { [key: string]: number };
+  // Para preguntas de texto: Lista de respuestas
+  answers?: string[];
+}
 
+// El objeto completo que devuelve el endpoint de resultados
+export interface SurveyResults {
+  surveyId: number;
+  title: string;
+  totalResponses: number;
+  results: QuestionResult[];
+}
 
-
-
+export interface SurveySubmission {
+  id: number;
+  surveyId: number;
+  submittedAt: string;
+  answers: {
+    questionId: number;
+    value: string | number | boolean | string[];
+  }[];
+}
