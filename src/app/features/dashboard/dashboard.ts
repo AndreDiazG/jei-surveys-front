@@ -46,4 +46,33 @@ export class DashboardComponent implements OnInit {
       console.error('Error al copiar: ', err);
     });
   }
+
+  deleteSurvey(id: number) {
+    // Confirmación antes de eliminar
+    if (confirm('¿Estás seguro de eliminar esta encuesta? Se perderán todas las respuestas.')) {
+      this.surveyService.deleteSurvey(id).subscribe({
+        next: () => {
+          // Actualizar la lista localmente filtrando la eliminada
+          this.surveys = this.surveys.filter(s => s.id !== id);
+        },
+        error: (err) => alert('Error al eliminar')
+      });
+    }
+  }
+
+  // Alternar el estado activo/inactivo de la encuesta
+  toggleStatus(survey: Survey) {
+    const newState = !survey.isActive;
+    this.surveyService.updateSurvey(survey.id, { isActive: newState }).subscribe({
+      next: (updatedSurvey) => {
+        // Actualizar el objeto en la lista local
+        survey.isActive = updatedSurvey.isActive;
+      },
+      error: (err) => {
+        console.error(err);
+        // Se revierte el cambio visual si falló el back
+        survey.isActive = !newState;
+      }
+    });
+  }
 }

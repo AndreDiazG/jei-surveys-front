@@ -50,6 +50,14 @@ export class SurveyService {
     );
   }
 
+  updateSurvey(id: number, data: { title?: string; isActive?: boolean }): Observable<Survey> {
+    return this.http.patch<Survey>(`${this.apiUrl}/${id}`, data);
+  }
+
+  deleteSurvey(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
   private calculateStats(survey: Survey, submissions: SurveySubmission[]): SurveyResults {
       // A. Inicializar el esqueleto de resultados basado en las PREGUNTAS
       const results: QuestionResult[] = (survey.questions || []).map(q => ({
