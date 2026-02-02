@@ -127,4 +127,8 @@ export class SurveyAnswerComponent implements OnInit {
       }
     });
   }
+
+  reloadPage() {
+    window.location.reload();
+  }
 }
