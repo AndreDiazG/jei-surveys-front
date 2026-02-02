@@ -1,4 +1,4 @@
-# JEI Surveys Front
+# Jei Surveys Front
 
 Aplicación frontend para la creación, gestión y análisis de encuestas desarrollada con **Angular 21** y **Bootstrap 5**.
 
